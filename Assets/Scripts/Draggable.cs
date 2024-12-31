@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -35,11 +36,19 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDra
     public void OnEndDrag(PointerEventData eventData)
     {
         Debug.Log("OnDrop");
+
+        if(target.GetComponent<TextboxController>().contacts.Count > 0)
+        {
+            Debug.Log("Comparar elementos");
+        }
+
         if (shouldReturn)
         {
             // target.transform.position = target.parent.position;
-            target.GetComponent<RectTransform>().anchoredPosition = startPosition;
-            target.localScale = Vector3.one;
+            // target.GetComponent<RectTransform>().anchoredPosition = startPosition;
+            // target.localScale = Vector3.one;
+
+            StartCoroutine(AnimateReturn(target, startPosition, Vector3.one, 0.5f));
         }
     }
 
@@ -53,5 +62,25 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDra
         // }
     }
 
+    private IEnumerator AnimateReturn(Transform target, Vector3 returnPosition, Vector3 originalScale, float duration)
+    {
+        float elapsedTime = 0f;
 
+        Vector3 initialPosition = target.GetComponent<RectTransform>().anchoredPosition;
+        Vector3 initialScale = target.localScale;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / duration;
+
+            target.GetComponent<RectTransform>().anchoredPosition = Vector3.Lerp(initialPosition, returnPosition, t);
+            target.localScale = Vector3.Lerp(initialScale, originalScale, t);
+
+            yield return null;
+        }
+
+        target.GetComponent<RectTransform>().anchoredPosition = returnPosition;
+        target.localScale = originalScale;
+    }
 }
