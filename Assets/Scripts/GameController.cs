@@ -35,6 +35,12 @@ public class GameController : MonoBehaviour
 
     public TextboxController textbox1;
     public TextboxController textbox2;
+    
+    // Estructuras de datos propuestas: Elijo usar listas por la facilidad y simplicidad en su uso con C#.
+    // Estas estructuras me permiten jugar con sus índices con lo que puedo ordenarlos y emparejarlos facilmente
+    // y ademas es una estructura que puedo usar para mostrarlos facilmente con los elementos de UI de Unity.
+    public List<string> group1 = new();
+    public List<string> group2 = new();
 
     private void Awake()
     {
@@ -47,12 +53,6 @@ public class GameController : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    
-    // Estructuras de datos propuestas: Elijo usar listas por la facilidad y simplicidad en su uso con C#.
-    // Estas estructuras me permiten jugar con sus índices con lo que puedo ordenarlos y emparejarlos facilmente
-    // y ademas es una estructura que puedo usar para mostrarlos facilmente con los elementos de UI de Unity.
-    public List<string> group1 = new();
-    public List<string> group2 = new();
 
     private void Start()
     {
@@ -92,6 +92,18 @@ public class GameController : MonoBehaviour
         }
 
         groupsLoaded = true;
+    }
+
+    public void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
+        }
     }
 
     private IEnumerator WaitLoadFirstGroup()
