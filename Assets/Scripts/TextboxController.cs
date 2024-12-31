@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class TextboxController : MonoBehaviour
@@ -16,14 +15,6 @@ public class TextboxController : MonoBehaviour
     {
         this.index = index;
         text.text = group == 1 ? GameController.Instance.group1[index] : GameController.Instance.group2[index];        
-    }
-
-    public void OnCollisionEnter(Collision collision)
-    {        
-        if (collision.gameObject.CompareTag("Group2"))
-        {
-            Debug.Log("Collision");
-        }
     }
 
     public void OnTriggerEnter(Collider other)

@@ -15,6 +15,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDra
     //     target.gameObject.SetActive(false);
     // }
 
+
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (shouldMove)
@@ -40,14 +41,14 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDra
         if(target.GetComponent<TextboxController>().contacts.Count > 0)
         {
             Debug.Log("Comparar elementos");
+            var textbox = target.GetComponent<TextboxController>();
+            var contact = target.GetComponent<TextboxController>().contacts[0];
+
+            shouldReturn = !GameController.Instance.ConfirmMatch(textbox, contact);
         }
 
-        if (shouldReturn)
+        if(shouldReturn)
         {
-            // target.transform.position = target.parent.position;
-            // target.GetComponent<RectTransform>().anchoredPosition = startPosition;
-            // target.localScale = Vector3.one;
-
             StartCoroutine(AnimateReturn(target, startPosition, Vector3.one, 0.5f));
         }
     }
