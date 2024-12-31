@@ -1,14 +1,17 @@
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
     public static GameController Instance;
-    public GameObject textboxPrefab;
+    public GameObject textbox1Prefab;
+    public GameObject textbox2Prefab;
 
     public Transform group1Container;
     public Transform group2Container;
+
+    public bool groupsLoaded = false;
 
     private void Awake()
     {
@@ -29,6 +32,7 @@ public class GameController : MonoBehaviour
 
     private void Start()
     {
+        StartCoroutine(WaitLoadFirstGroup());
         group1 = new()
         {
             "Usar contraseñas fuertes y únicas",
@@ -53,7 +57,28 @@ public class GameController : MonoBehaviour
         for (int i = 0; i < group1.Count; i++)
         {
             CreateTextbox(1, shuffledGroup1[i]);
+        }
+        
+
+        for (int i = 0; i < group2.Count; i++)
+        {
             CreateTextbox(2, shuffledGroup2[i]);
+        }
+
+        groupsLoaded = true;
+    }
+
+    private IEnumerator WaitLoadFirstGroup()
+    {
+        yield return new WaitUntil(() => groupsLoaded);
+        foreach (Transform child in group1Container)
+        {
+            child.gameObject.GetComponent<Collider>().enabled = true;
+        }
+
+        foreach (Transform child in group2Container)
+        {
+            child.gameObject.GetComponent<Collider>().enabled = true;
         }
     }
 
@@ -80,8 +105,8 @@ public class GameController : MonoBehaviour
 
     public void CreateTextbox(int group, int i)
     {
-        var textbox = Instantiate(textboxPrefab, new Vector3(0, 0, 0), Quaternion.identity).GetComponent<TextboxController>();
-        textbox.Initialize(group, i);
+        var textbox = Instantiate(group == 1 ? textbox1Prefab : textbox2Prefab, new Vector3(0, 0, 0), Quaternion.identity).GetComponent<TextboxController>();
+        textbox.Initialize(i);
         textbox.transform.SetParent(group == 1 ? group1Container : group2Container, false);
     }
 }
